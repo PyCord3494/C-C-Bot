@@ -26,32 +26,58 @@ class Economy(commands.Cog):
 		logs.close()
 
 
-	async def editBal(self, ctx, amnt):
+	@commands.command(pass_context=True)
+	async def balance(self, ctx):
+		with open('users.json') as f:
+			data = json.load(f)
+		await ctx.send(data[str(ctx.author.id)])
 
-		log(ctx.author.id, amnt)
 
-	@commands.command(pass_context=True)	
+	async def editBal(self, discordId, amnt: int):
+		with open('users.json') as f:
+				data = json.load(f)
+
+		data[str(discordId)] = data[str(discordId)] + amnt
+
+		with open('users.json','w') as f:
+			json.dump(data, f, indent=4)
+		#log(ctx.author.id, amnt)
+
+	async def checkBal(self, discordId, amnt: int):
+		with open('users.json') as f:
+				data = json.load(f)
+
+		if data[str(discordId)] >= amnt:
+			return True
+		else:
+			return False
+
+	@commands.command(pass_context=True)
+	async def addcoins(self, ctx, user: discord.Member, amnt: int):
+		with open('users.json') as f:
+				data = json.load(f)
+
+		if str(user.id) in data:
+			data[str(user.id)] = data[str(user.id)] + amnt
+
+			with open('users.json','w') as f:
+				json.dump(data, f, indent=4)
+		else:
+			await ctx.send("User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
+		#log(ctx.author.id, amnt)
+
+	@commands.command(pass_context=True)
 	async def start(self, ctx):
 		if await self.accCheck(ctx.author.id) == False:
-			with open(r"users.json", 'r') as f:
-				users = json.load(f)
+			newuser = {f"{ctx.author.id}" : 100}
+			with open('users.json') as f:
+				data = json.load(f)
 
+			data.update(newuser)
 
-			users = {ctx.author.id : 100}
+			with open('users.json','w') as f:
+				json.dump(data, f, indent=4)
 
-			with open(r"users.json", 'r+') as f:
-				json.dump(users, f, indent=4)
-
-
-			with open("user.json", "r+") as f:
-			    data = json.load(f)
-
-			    tmp = data["location"]
-			    data["location"] = "NewPath"
-
-			    f.seek(0)  # rewind
-			    json.dump(data, f)
-			    f.truncate()
 		else:
 			await ctx.send(f"{ctx.author.mention}, you already have an account registered!")
 
@@ -60,7 +86,7 @@ class Economy(commands.Cog):
 		with open(r"users.json", 'r') as f:
 			users = json.load(f)
 
-		if discordId in users:
+		if str(discordId) in users:
 			return True
 		else:
 			return False
