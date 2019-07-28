@@ -4,15 +4,25 @@ from discord.ext.commands import has_permissions
 
 import ztoken
 
-bot = commands.Bot(command_prefix = ".")
-extensions = []
+bot = commands.Bot(command_prefix = "+")
+extensions = ["cogs.economy", "cogs.earn", "cogs.transfer"]
 
 
 @bot.event
 async def on_ready():
+	global LogFile
+	LogFile = open("Logs.txt", "a")
+	
 	print(f"{bot.user.name} - {bot.user.id}")
 	print(discord.__version__)
 	print("Ready...")
+
+
+@bot.command(hidden = True, pass_context=True)
+async def end(ctx):
+	if await bot.is_owner(ctx.message.author):
+		print("\nGoing to sleep...\n")
+		await bot.logout()
 
 
 @bot.command(hidden = True)
