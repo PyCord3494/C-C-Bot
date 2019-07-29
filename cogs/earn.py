@@ -19,23 +19,81 @@ class Earn(commands.Cog):
 	@commands.command(pass_context=True)
 	@commands.cooldown(1, 300, commands.BucketType.user)	
 	async def work(self, ctx):
-		pass
+		author = ctx.author
+		discordId = author.id
+		if await self.bot.get_cog("Economy").accCheck(discordId) == False:
+			await ctx.send("You must $start your account before you can buy stuff.")
+			return
+
+		currency = self.bot.get_cog("Economy").getCurrency()
+		amnt = random.randint(200, 300)	
+		await self.bot.get_cog("Economy").editBal(discordId, amnt)
+		bal = self.bot.get_cog("Economy").getBal(discordId)
+		await ctx.send(f"After a long day of work, you earned {amnt} {currency}. You now have {bal} {currency}.")
+
 
 
 	@commands.command(pass_context=True)
 	@commands.cooldown(1, 300, commands.BucketType.user)
 	async def crime(self, ctx):
-		amnt = random.randint(0, 301)
+		author = ctx.author
+		discordId = author.id
+		if await self.bot.get_cog("Economy").accCheck(discordId) == False:
+			await ctx.send("You must $start your account before you can buy stuff.")
+			return
+			
+		amnt = random.randint(0, 300)
 		outcome = random.randint(0, 1)
+		currency = self.bot.get_cog("Economy").getCurrency()
 
 		if outcome == 0:
-			await ctx.send(f"Successfully robbed {amnt} coins from a bank!")
+			await self.bot.get_cog("Economy").editBal(discordId, amnt)
+			bal = self.bot.get_cog("Economy").getBal(discordId)
+			await ctx.send(f"Successfully robbed {amnt} {currency} from a bank! You now have {bal} {currency}.")
 
 		elif outcome == 1:
-			await ctx.send(f"Oh no! You got caught and you were fined {amnt} coins.")
+			await self.bot.get_cog("Economy").editBal(discordId, -amnt)
+			bal = self.bot.get_cog("Economy").getBal(discordId)
+			await ctx.send(f"Oh no! You got caught and you were fined {amnt} {currency}. You now have {bal} {currency}.")
 
-		#bal = 
-		#await ctx.send(f"{msg}\nYou now have {bal} coins")
+
+
+	@commands.command(pass_context=True)
+	@commands.cooldown(1, 300, commands.BucketType.user)
+	async def gamble(self, ctx, amnt):
+		currency = self.bot.get_cog("Economy").getCurrency()
+		author = ctx.author
+		discordId = author.id
+		try:
+			amnt = int(amnt)
+		except:
+			await ctx.send("no")
+
+		if amnt < 1:
+			await ctx.send("That's not a valid bet amount. You must bet a number above 0.")
+			return
+		if await self.bot.get_cog("Economy").accCheck(discordId) == False:
+			await ctx.send("You must $start your account before you can buy stuff.")
+			return
+		currency = self.bot.get_cog("Economy").getCurrency()
+		bal = self.bot.get_cog("Economy").getBal(discordId)
+		if bal < amnt: # if user doesn't have enough {currency} to gamble specified amnt
+			await ctx.send(f"That will cost you {amnt} {currency}, but you only have {bal} {currency}")
+			return
+
+		outcome = random.randint(1, 10) # num between 1 and 10
+		if outcome < 5: # 40% win rate
+			await self.bot.get_cog("Economy").editBal(discordId, amnt)
+			bal = self.bot.get_cog("Economy").getBal(discordId)
+			await ctx.send(f"Congrats! You won doubled your bet! You now have {bal} {currency}.")
+		else: # 60% lose rate
+			await self.bot.get_cog("Economy").editBal(discordId, -amnt)
+			bal = self.bot.get_cog("Economy").getBal(discordId)
+			await ctx.send(f"Unfortunately, you have lost your {currency} you have bet. You now have {bal} {currency}.")
+
+
+		
+
 
 
 def setup(bot):

@@ -1,11 +1,22 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
+import json
+import time
 
 import ztoken
 
-bot = commands.Bot(command_prefix = "+")
-extensions = ["cogs.economy", "cogs.earn", "cogs.transfer"]
+
+async def get_prefix(bot, message):
+	with open(r"config.json", 'r') as f:
+			config = json.load(f)
+
+	prefix = config["prefix"]
+	return prefix
+
+
+bot = commands.Bot(command_prefix = get_prefix)
+extensions = ["cogs.economy", "cogs.earn", "cogs.transfer", "cogs.shop", "cogs.rewards", "cogs.admin"]
 
 
 @bot.event
@@ -17,6 +28,12 @@ async def on_ready():
 	print(discord.__version__)
 	print("Ready...")
 
+@bot.command(pass_context=True)
+async def ping(ctx):
+	before = time.monotonic()
+	message = await ctx.send("Pong!")
+	ping = (time.monotonic() - before) * 1000
+	await message.edit(content=f"Pong!  `{round(ping,9)} ms`")
 
 @bot.command(hidden = True, pass_context=True)
 async def end(ctx):

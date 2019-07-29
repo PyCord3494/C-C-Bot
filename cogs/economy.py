@@ -1,4 +1,4 @@
-# Cog for all the transactions/logging 
+	# Cog for all the transactions/logging 
 # Aka anything dealing with file editing
 
 
@@ -10,28 +10,43 @@ from discord.ext.commands import has_permissions
 import datetime
 import json
 
+def log(discordID, credits): # Logs what credits have been spent where, by who, to who, why and the time which this has happened
+	#localtime = time.asctime(time.localtime(time.time()))
+	x = datetime.datetime.now()
+						#  MON DAY HOUR:MIN:SEC
+	localtime = x.strftime("%b %d %H:%M:%S")
+	logs = open("logs.txt", "a")
+	logs.write(f"{localtime} : {discordID} : {credits}\n")
+	logs.flush()
+	logs.close()
 
 class Economy(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	def log(discordID, credits): # Logs what credits have been spent where, by who, to who, why and the time which this has happened
-		#localtime = time.asctime(time.localtime(time.time()))
-		x = datetime.datetime.now()
-							#  MON DAY HOUR:MIN:SEC
-		localtime = x.strftime("%b %d %H:%M:%S")
-		logs = open("logs.txt", "a")
-		logs.write(f"{localtime} : {discordID} : {credits}\n")
-		logs.flush()
-		logs.close()
 
+	def getCurrency(self):
+		with open(r"config.json", 'r') as f:
+			config = json.load(f)
 
-	@commands.command(pass_context=True)
+		currency = config["currency"]
+		return currency
+
+	@commands.command(aliases=["bal", "money"],pass_context=True)
 	async def balance(self, ctx):
-		with open('users.json') as f:
-			data = json.load(f)
-		await ctx.send(data[str(ctx.author.id)])
+		if await self.bot.get_cog("Economy").accCheck(ctx.author.id) == False:
+			await ctx.send("You must $start your account before you can buy stuff.")
+			
+		currency = self.getCurrency()
+		bal = self.getBal(ctx.author.id)
+		await ctx.send(f"You have {bal} {currency}")
 
+
+	def getBal(self, discordId):
+		with open('users.json', 'r') as f:
+			data = json.load(f)
+		bal = data[str(discordId)]
+		return bal
 
 	async def editBal(self, discordId, amnt: int):
 		with open('users.json') as f:
@@ -41,7 +56,7 @@ class Economy(commands.Cog):
 
 		with open('users.json','w') as f:
 			json.dump(data, f, indent=4)
-		#log(ctx.author.id, amnt)
+		log(discordId, amnt)
 
 	async def checkBal(self, discordId, amnt: int):
 		with open('users.json') as f:
@@ -52,24 +67,11 @@ class Economy(commands.Cog):
 		else:
 			return False
 
-	@commands.command(pass_context=True)
-	async def addcoins(self, ctx, user: discord.Member, amnt: int):
-		with open('users.json') as f:
-				data = json.load(f)
-
-		if str(user.id) in data:
-			data[str(user.id)] = data[str(user.id)] + amnt
-
-			with open('users.json','w') as f:
-				json.dump(data, f, indent=4)
-		else:
-			await ctx.send("User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
-		#log(ctx.author.id, amnt)
 
 	@commands.command(pass_context=True)
 	async def start(self, ctx):
 		if await self.accCheck(ctx.author.id) == False:
-			newuser = {f"{ctx.author.id}" : 100}
+			newuser = {str(ctx.author.id) : 100}
 			with open('users.json') as f:
 				data = json.load(f)
 

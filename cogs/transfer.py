@@ -13,29 +13,40 @@ class Transfer(commands.Cog):
 
 	@commands.command(pass_context=True)	
 	async def send(self, ctx, user: discord.Member, amnt: int):
+		embed = discord.Embed(color=0xff0909)
+		embed.set_thumbnail(url=ctx.author.avatar_url)
 		author = ctx.author
+		currency = self.bot.get_cog("Economy").getCurrency()
 		if user is None:
-			await ctx.send("Invalid member.")
+			embed.add_field(name="C&C Bot", value="Invalid member.")
+			await ctx.send(embed=embed)
 			return
 		if await self.bot.get_cog("Economy").accCheck(author.id) == False:
-			await ctx.send(f"{author.mention}, you must +start your account before you can send money.")
+			embed.add_field(name="C&C Bot", value=f"{author.mention}, you must +start your account before you can send money.")
+			await ctx.send(embed=embed)
 			return
 		if await self.bot.get_cog("Economy").accCheck(user.id) == False:
-			await ctx.send(f"{user.mention} must +start his account before he can accept money.")
+			embed.add_field(name="C&C Bot", value=f"{user.mention} must +start his account before he can accept money.")
+			await ctx.send(embed=embed)
 			return
 		if author == user:
-			await ctx.send("You can't send money to yourself.")
+			embed.add_field(name="C&C Bot", value="You can't send {currency} to yourself.")
+			await ctx.send(embed=embed)
 			return
 		if amnt < 1:
-			await ctx.send("You need to transfer at least 1 credit.")
+			embed.add_field(name="C&C Bot", value=f"You need to transfer at least 1. {currency}")
+			await ctx.send(embed=embed)
 			return
 
 		if await self.bot.get_cog("Economy").checkBal(author.id, amnt) == True:
+			embed.color = discord.Color(0xdfe324)
 			await self.bot.get_cog("Economy").editBal(author.id, -amnt)
 			await self.bot.get_cog("Economy").editBal(user.id, int(amnt * 0.92))
-			await ctx.send(f"{author.mention} has sent {amnt} credits and after taxes, {user.mention} has received {int(amnt * 0.92)}.")
+			embed.add_field(name="C&C Bot", value=f"{author.mention} has sent {amnt} {currency} and after taxes, {user.mention} has received {int(amnt * 0.92)}.")
 		else:
-			await ctx.send("You do not have enough money to send that much.")
+			embed.add_field(name="C&C Bot", value=f"You do not have enough {currency} to send that much.")
+
+		await ctx.send(embed=embed)
 
 def setup(bot):
 	bot.add_cog(Transfer(bot))
