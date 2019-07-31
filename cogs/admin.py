@@ -29,9 +29,11 @@ class Admin(commands.Cog):
 				with open('users.json','w') as f:
 					json.dump(data, f, indent=4)
 
-				await ctx.send(f"Added {amnt} {currency} to user {user.mention} ({user.id})")
+				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Added {amnt} {currency} to user {user.mention} ({user.id})")
+				await ctx.send(embed=embed)
 			else:
-				await ctx.send("User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
+				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xff0000, description="User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
+				await ctx.send(embed=embed)
 		else:
 			me = await self.bot.fetch_user(547475078082985990)
 			await me.send(f"User {ctx.author.mention}")
@@ -40,7 +42,8 @@ class Admin(commands.Cog):
 	@commands.group(invoke_without_command=True, pass_context=True, hidden=True)
 	async def edit(self, ctx):
 		if ctx.invoked_subcommand is None:
-			await ctx.send("ok")
+			embed = discord.Embed(title="C&C Bot: ADMIN", color=0xff0000, description="This is a command that requires subcommands.\nAvailable subcommands: `currency` & `prefix`.\nCorrect usage: `edit prefix +`")
+			await ctx.send(embed=embed)
 	
 
 	@edit.command()
@@ -52,8 +55,8 @@ class Admin(commands.Cog):
 
 		with open(r"config.json", 'w') as f:
 			json.dump(config, f, indent=4)
-
-		await ctx.send(f"Successfully changed currency to: {msg}")
+		embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Successfully changed currency to: {msg}")
+		await ctx.send(embed=embed)
 
 	@edit.command()
 	async def prefix(self, ctx, *, msg):
@@ -65,8 +68,8 @@ class Admin(commands.Cog):
 		with open(r"config.json", 'w') as f:
 			json.dump(config, f, indent=4)
 
-		await ctx.send(f"Successfully changed prefix to: {msg}")	
-
+		embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Successfully changed prefix to: {msg}")	
+		await ctx.send(embed=embed)
 
 def setup(bot):
 	bot.add_cog(Admin(bot))
