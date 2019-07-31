@@ -46,7 +46,7 @@ class Economy(commands.Cog):
 	@commands.command(aliases=["bal", "money"],pass_context=True)
 	async def balance(self, ctx):
 		if await self.bot.get_cog("Economy").accCheck(ctx.author.id) == False:
-			embed = discord.Embed(title="C&C Bot: Balance", color=0xfd0006, description="You must $start your account before you can use my commands.")
+			embed = discord.Embed(title="C&C Bot: Balance", color=0xff0000, description="You must $start your account before you can use my commands.")
 			await ctx.send(embed=embed)
 			return
 
@@ -98,7 +98,7 @@ class Economy(commands.Cog):
 			await ctx.send(embed=embed)
 
 		else:
-			embed = discord.Embed(title="C&C Bot: New Account", color=0xfd0006, description=f"{ctx.author.mention}, you already have an account registered!")
+			embed = discord.Embed(title="C&C Bot: New Account", color=0xff0000, description=f"{ctx.author.mention}, you already have an account registered!")
 			await ctx.send(embed=embed)
 
 
