@@ -16,24 +16,25 @@ class Admin(commands.Cog):
 		self.bot = bot
 
 	@commands.command(hidden=True, pass_context=True)
-	@commands.has_permissions(administrator=True)
 	async def addcoins(self, ctx, user: discord.Member, amnt: int):
-		currency = self.bot.get_cog("Economy").getCurrency()
+		if ctx.author.id == 435806214484393996 or ctx.author.id == 547475078082985990:
+			currency = self.bot.get_cog("Economy").getCurrency()
 
-		with open('users.json') as f:
-				data = json.load(f)
+			with open('users.json') as f:
+					data = json.load(f)
 
-		if str(user.id) in data:
-			data[str(user.id)] = data[str(user.id)] + amnt
+			if str(user.id) in data:
+				data[str(user.id)] = data[str(user.id)] + amnt
 
-			with open('users.json','w') as f:
-				json.dump(data, f, indent=4)
+				with open('users.json','w') as f:
+					json.dump(data, f, indent=4)
 
-			await ctx.send(f"Added {amnt} {currency} to user {ctx.author.mention} ({ctx.author.id})")
+				await ctx.send(f"Added {amnt} {currency} to user {user.mention} ({user.id})")
+			else:
+				await ctx.send("User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
 		else:
-			await ctx.send("User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
-		
-		#log(ctx.author.id, amnt)
+			me = await self.bot.fetch_user(547475078082985990)
+			await me.send(f"User {ctx.author.mention}")
 
 
 	@commands.group(invoke_without_command=True, pass_context=True, hidden=True)

@@ -32,7 +32,8 @@ class Rewards(commands.Cog):
 			bal = self.bot.get_cog("Economy").getBal(discordId)
 			await ctx.send(f"You now have {bal} {currency}.")
 		else: 
-			await ctx.send("You must $start your account before you can buy stuff.")
+			embed = discord.Embed(title="C&C Bot: Rewards", color=0xfd0006, description="You must $start your account before you can use my commands.")
+			await ctx.send(embed=embed)
 
 		
 
