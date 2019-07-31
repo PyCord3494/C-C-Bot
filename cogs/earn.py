@@ -22,7 +22,7 @@ class Earn(commands.Cog):
 		author = ctx.author
 		discordId = author.id
 		if await self.bot.get_cog("Economy").accCheck(discordId) == False:
-			embed = discord.Embed(title="C&C Bot: Work", color=0xfd0006, description="You must $start your account before you can use my commands.")
+			embed = discord.Embed(title="C&C Bot: Work", color=0xff0000, description="You must $start your account before you can use my commands.")
 			await ctx.send(embed=embed)
 			return
 
@@ -30,7 +30,8 @@ class Earn(commands.Cog):
 		amnt = random.randint(200, 300)	
 		await self.bot.get_cog("Economy").editBal(discordId, amnt)
 		bal = self.bot.get_cog("Economy").getBal(discordId)
-		await ctx.send(f"After a long day of work, you earned {amnt} {currency}. You now have {bal} {currency}.")
+		embed = discord.Embed(title="C&C Bot: Work", color=0xdfe324, description=f"After a long day of work, you earned {amnt} {currency}. You now have {bal} {currency}.")
+		await ctx.send(embed=embed)
 
 
 
@@ -40,7 +41,7 @@ class Earn(commands.Cog):
 		author = ctx.author
 		discordId = author.id
 		if await self.bot.get_cog("Economy").accCheck(discordId) == False:
-			embed = discord.Embed(title="C&C Bot: Crime", color=0xfd0006, description="You must $start your account before you can use my commands.")
+			embed = discord.Embed(title="C&C Bot: Crime", color=0xff0000, description="You must $start your account before you can use my commands.")
 			await ctx.send(embed=embed)
 			return
 			
@@ -51,12 +52,13 @@ class Earn(commands.Cog):
 		if outcome == 0:
 			await self.bot.get_cog("Economy").editBal(discordId, amnt)
 			bal = self.bot.get_cog("Economy").getBal(discordId)
-			await ctx.send(f"Successfully robbed {amnt} {currency} from a bank! You now have {bal} {currency}.")
+			embed = discord.Embed(title="C&C Bot: Crime", color=0xdfe324, description=f"Successfully robbed {amnt} {currency} from a bank! You now have {bal} {currency}.")
+			await ctx.send(embed=embed)
 
 		elif outcome == 1:
 			await self.bot.get_cog("Economy").editBal(discordId, -amnt)
 			bal = self.bot.get_cog("Economy").getBal(discordId)
-			embed = discord.Embed(title="C&C Bot: Gamble", color=0xfd0006, description=f"Oh no! You got caught and you were fined {amnt} {currency}. You now have {bal} {currency}.")
+			embed = discord.Embed(title="C&C Bot: Crime", color=0xff0000, description=f"Oh no! You got caught and you were fined {amnt} {currency}. You now have {bal} {currency}.")
 			await ctx.send(embed=embed)
 
 
@@ -70,19 +72,25 @@ class Earn(commands.Cog):
 		try:
 			amnt = int(amnt)
 		except:
-			await ctx.send("no")
+			if amnt == "allin" or amnt == "all":
+				amnt = self.bot.get_cog("Economy").getBal(discordId)
+			else:
+				embed = discord.Embed(title="C&C Bot: Gamble", color=0xff0000, description=f"You've provided improper input for the `gamble` command. I do not know what `{amnt}` is.\nProper usage: +gamble *amnt*")
+				await ctx.send(embed=embed)
+				return
+
 
 		if amnt < 1:
 			await ctx.send("That's not a valid bet amount. You must bet a number above 0.")
 			return
 		if await self.bot.get_cog("Economy").accCheck(discordId) == False:
-			embed = discord.Embed(title="C&C Bot: Gamble", color=0xfd0006, description="You must $start your account before you can use my commands.")
+			embed = discord.Embed(title="C&C Bot: Gamble", color=0xff0000, description="You must $start your account before you can use my commands.")
 			await ctx.send(embed=embed)
 			return
 		currency = self.bot.get_cog("Economy").getCurrency()
 		bal = self.bot.get_cog("Economy").getBal(discordId)
 		if bal < amnt: # if user doesn't have enough {currency} to gamble specified amnt
-			embed = discord.Embed(title="C&C Bot: Gamble", color=0xfd0006, description=f"That will cost you {amnt} {currency}, but you only have {bal} {currency}")
+			embed = discord.Embed(title="C&C Bot: Gamble", color=0xff0000, description=f"That will cost you {amnt} {currency}, but you only have {bal} {currency}")
 			await ctx.send(embed=embed)
 			return
 
@@ -90,11 +98,12 @@ class Earn(commands.Cog):
 		if outcome < 5: # 40% win rate
 			await self.bot.get_cog("Economy").editBal(discordId, amnt)
 			bal = self.bot.get_cog("Economy").getBal(discordId)
-			await ctx.send(f"Congrats! You won doubled your bet! You now have {bal} {currency}.")
+			embed = discord.Embed(title="C&C Bot: Gamble", color=0xdfe324, description=f"Congrats! You won doubled your bet! You now have {bal} {currency}.")
+			await ctx.send(embed=embed)
 		else: # 60% lose rate
 			await self.bot.get_cog("Economy").editBal(discordId, -amnt)
 			bal = self.bot.get_cog("Economy").getBal(discordId)
-			embed = discord.Embed(title="C&C Bot: Gamble", color=0xfd0006, description=f"Unfortunately, you have lost your {currency} you have bet. You now have {bal} {currency}.")
+			embed = discord.Embed(title="C&C Bot: Gamble", color=0xff0000, description=f"Unfortunately, you have lost your {currency} you have bet. You now have {bal} {currency}.")
 			await ctx.send(embed=embed)
 
 
