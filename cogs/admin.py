@@ -8,12 +8,29 @@ from discord.ext.commands import has_permissions
 import asyncio
 import json
 
+import time
 import datetime
 
 
 class Admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+
+	@commands.command(pass_context=True)
+	@commands.cooldown(1, 2, commands.BucketType.user)	
+	async def ping(self, ctx):
+		embed = discord.Embed(color=0xdfe324, description="Pong!")
+		before = time.monotonic()
+		message = await ctx.send(embed=embed)
+		ping = (time.monotonic() - before) * 1000
+		embed.description = f"Pong!  `{round(ping,9)} ms`"
+		await message.edit(embed=embed)
+
+	@commands.command(hidden = True, pass_context=True)
+	async def end(self, ctx):
+		if await self.bot.is_owner(ctx.author):
+			print("\nGoing to sleep...\n")
+			await self.bot.logout()
 
 	@commands.command(hidden=True, pass_context=True)
 	async def addcoins(self, ctx, user: discord.Member, amnt: int):
@@ -70,6 +87,7 @@ class Admin(commands.Cog):
 
 		embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Successfully changed prefix to: {msg}")	
 		await ctx.send(embed=embed)
+
 
 def setup(bot):
 	bot.add_cog(Admin(bot))

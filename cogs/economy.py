@@ -12,8 +12,7 @@ import datetime
 import json
 import operator
 
-def log(discordID, credits): # Logs what credits have been spent where, by who, to who, why and the time which this has happened
-	#localtime = time.asctime(time.localtime(time.time()))
+def log(discordID, credits): # Logs the time, the user's id, and the amount in which a balance gets edited
 	x = datetime.datetime.now()
 						#  MON DAY HOUR:MIN:SEC
 	localtime = x.strftime("%b %d %H:%M:%S")
@@ -26,33 +25,24 @@ class Economy(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	@commands.command(pass_context=True)
-	async def test(self, ctx):
-		embed = discord.Embed(title="Epic Account Verification", color=0xdfe324)
-		embed.add_field(name="_ _", value=f"Member: {ctx.author.mention}")
-		await ctx.send(embed=embed)
-		#user = await self.bot.fetch_user(552292743762673675)
-		#await ctx.send(user.mention)
-
-
-
-	def getCurrency(self):
+	def getCurrency(self): # grabs currency from config file
 		with open(r"config.json", 'r') as f:
 			config = json.load(f)
 
 		currency = config["currency"]
 		return currency
 
+
 	@commands.command(aliases=["bal", "money"],pass_context=True)
+	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def balance(self, ctx):
-		if await self.bot.get_cog("Economy").accCheck(ctx.author.id) == False:
-			embed = discord.Embed(title="C&C Bot: Balance", color=0xff0000, description="You must $start your account before you can use my commands.")
-			await ctx.send(embed=embed)
+		if await self.bot.get_cog("Economy").accCheck(ctx, ctx.author.id) == False:
 			return
 
 		currency = self.getCurrency()
 		bal = self.getBal(ctx.author.id)
 		embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"You currently have {bal} {currency}")
+		embed.set_thumbnail(url=ctx.author.avatar_url)
 		await ctx.send(embed=embed)
 
 
@@ -62,6 +52,7 @@ class Economy(commands.Cog):
 		bal = data[str(discordId)]
 		return bal
 
+
 	async def editBal(self, discordId, amnt: int):
 		with open('users.json') as f:
 				data = json.load(f)
@@ -70,7 +61,12 @@ class Economy(commands.Cog):
 
 		with open('users.json','w') as f:
 			json.dump(data, f, indent=4)
+			bal = data[str(discordId)]
 		log(discordId, amnt)
+		return bal
+
+
+
 
 	async def checkBal(self, discordId, amnt: int):
 		with open('users.json') as f:
@@ -83,8 +79,9 @@ class Economy(commands.Cog):
 
 
 	@commands.command(pass_context=True)
+	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def start(self, ctx):
-		if await self.accCheck(ctx.author.id) == False:
+		if await self.accCheck(ctx, ctx.author.id) == False:
 			newuser = {str(ctx.author.id) : 100}
 			with open('users.json') as f:
 				data = json.load(f)
@@ -95,23 +92,32 @@ class Economy(commands.Cog):
 				json.dump(data, f, indent=4)
 
 			embed = discord.Embed(title="C&C Bot: New Account", color=0xdfe324, description=f"{ctx.author.mention}, successfully registered!")
+			embed.set_thumbnail(url=ctx.author.avatar_url)
 			await ctx.send(embed=embed)
 
 		else:
 			embed = discord.Embed(title="C&C Bot: New Account", color=0xff0000, description=f"{ctx.author.mention}, you already have an account registered!")
+			embed.set_thumbnail(url=ctx.author.avatar_url)
 			await ctx.send(embed=embed)
 
 
-	async def accCheck(self, discordId):
+	async def accCheck(self, ctx, discordId):
 		with open(r"users.json", 'r') as f:
 			users = json.load(f)
 
 		if str(discordId) in users:
 			return True
 		else:
+			if str(ctx.command) != "start": # don't print if user is trying to $start
+				ctx.command.reset_cooldown(ctx)
+				embed = discord.Embed(title="C&C Bot: New User Alert!", color=0xff0000, description="You must $start your account before you can use my commands.")
+				embed.set_thumbnail(url=ctx.author.avatar_url)
+				await ctx.send(embed=embed)
 			return False
 
+
 	@commands.command(pass_context=True)
+	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def lb(self, ctx):
 		currency = self.getCurrency()
 		with open('users.json') as f:
@@ -120,9 +126,9 @@ class Economy(commands.Cog):
 
 		lb = [] # leaderboard
 		for line in lines: # each line in file
-			user = self.bot.get_user(line[0]) # grab user object from ID 
+			user = self.bot.get_user(id=int(line[0])) # grab user object from ID 
 			if not user:
-				user = await self.bot.fetch_user(line[0])
+				user = await self.bot.fetch_user(int(line[0]))
 			else:
 				print("SUCCESSFULLY GET_USER")
 			lb.append(f"{user.name} | {line[1]} {currency}\n") # add username and balance to leaderboard
@@ -169,11 +175,6 @@ class Economy(commands.Cog):
 			await msg.edit(embed=embed)
 
 		await msg.clear_reactions() # clear reactions after while loop
-
-
-
-	
-
 
 
 def setup(bot):

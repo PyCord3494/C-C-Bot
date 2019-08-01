@@ -7,6 +7,7 @@ from discord.ext.commands import has_permissions
 
 import json
 import datetime
+import traceback
 from difflib import get_close_matches
 
 
@@ -25,9 +26,11 @@ class ErrorHelp(commands.Cog):
 	async def on_command_error(self, ctx, error):
 		embed = discord.Embed(title="C&C Bot: ERROR", color=0xff0000)
 
+		error = getattr(error, 'original', error)
+
 		if isinstance(error, commands.CommandNotFound):
 			prefix = self.get_prefix()
-			lst = ["help", "balance", "bal", "money", "shop", "send", "leaderboard", "lb", "work", "crime", "gamble", "slots", "daily"]
+			lst = ["ping", "botinfo", "help", "balance", "bal", "money", "shop", "send", "leaderboard", "lb", "work", "crime", "gamble", "slots", "daily"]
 		#	embed.description = "Command not found!"
 			cmd = ctx.message.content.split()[0][1:]
 			try:
@@ -36,10 +39,6 @@ class ErrorHelp(commands.Cog):
 				embed.description = f"`{prefix}{cmd}` is not a known command."
 			else:
 				embed.description = f"`{prefix}{cmd}` is not a command, did you mean `{prefix}{closest}`?"
-			
-
-
-
 
 
 		elif isinstance(error, commands.CommandOnCooldown):
@@ -64,14 +63,35 @@ class ErrorHelp(commands.Cog):
 		elif isinstance(error, commands.CheckFailure):
 			embed.description = "You do not have the required permissions to use this command."
 
-		else:
+		elif isinstance(error, commands.BadArgument):
 			ctx.command.reset_cooldown(ctx)
 			embed.description = f"{error}"
+		else:
+			ctx.command.reset_cooldown(ctx)
+			err = str(error)
+			err = err.split(':', 2)[-1]
 
+			embed.description = f"Error: `{err}`. \nDeveloper has been contacted with all related details..."
+			e = discord.Embed(title='Command Error', colour=0xcc3366)
+			command_name = ctx.command.qualified_name
+			if command_name: 
+				e.add_field(name='Name', value=ctx.command.qualified_name)
+			e.add_field(name='Author', value=f'{ctx.author} (ID: {ctx.author.id})')
 
+			fmt = f'Channel: {ctx.channel} (ID: {ctx.channel.id})'
+			if ctx.guild:
+				fmt = f'{fmt}\nGuild: {ctx.guild} (ID: {ctx.guild.id})'
+
+			e.add_field(name='Location', value=f"{fmt}]\n[Link]({ctx.message.jump_url})", inline=False)
+
+			exc = ''.join(traceback.format_exception(type(error), error, error.__traceback__, chain=False))
+			e.description = f'```py\n{exc}\n```'
+			e.timestamp = datetime.datetime.utcnow()
+			ch = self.bot.get_channel(605921228083167245)
+			await ch.send(embed=e)
+
+		embed.set_thumbnail(url=ctx.author.avatar_url)
 		await ctx.send(embed=embed)
-
-
 
 
 def setup(bot):

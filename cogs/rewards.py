@@ -19,25 +19,18 @@ class Rewards(commands.Cog):
 	async def daily(self, ctx):
 		author = ctx.author
 		discordId = author.id
-		if await self.bot.get_cog("Economy").accCheck(discordId) == True:
+		if await self.bot.get_cog("Economy").accCheck(ctx, discordId) == True:
 			currency = self.bot.get_cog("Economy").getCurrency()
 			if "Nitro Booster" in [y.name.lower() for y in author.roles]:
 				reward = 1000
 			else:
 				reward = 500
 
-			await self.bot.get_cog("Economy").editBal(discordId, reward)
-			bal = self.bot.get_cog("Economy").getBal(discordId)
+			bal = await self.bot.get_cog("Economy").editBal(discordId, reward)
 			embed = discord.Embed(title="C&C Bot: Rewards", color=0xdfe324, description=f"{reward} {currency} has been added to your account. You now have {bal} {currency}")
+			embed.set_thumbnail(url=ctx.author.avatar_url)
 			await ctx.send(embed=embed)
-		else: 
-			embed = discord.Embed(title="C&C Bot: Rewards", color=0xff0000, description="You must $start your account before you can use my commands.")
-			await ctx.send(embed=embed)
-
 		
-
-
-
 
 def setup(bot):
 	bot.add_cog(Rewards(bot))
