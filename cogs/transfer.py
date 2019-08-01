@@ -4,8 +4,6 @@
 
 import discord
 from discord.ext import commands
-import asyncio
-from discord.ext.commands import has_permissions
 
 class Transfer(commands.Cog):
 	def __init__(self, bot):
@@ -45,7 +43,7 @@ class Transfer(commands.Cog):
 		if await self.bot.get_cog("Economy").checkBal(author.id, amnt) == True: # if sender has enough money
 			senderBal = await self.bot.get_cog("Economy").editBal(author.id, -amnt) # subtract amnt from sender
 			receiverBal = await self.bot.get_cog("Economy").editBal(user.id, int(amnt * 0.92)) # subtract taxes from amnt and add amnt to bal of receiver
-			embed = discord.Embed(title="C&C Bot: Send", color=0xdfe324, description=f"{author.mention} has sent {amnt} {currency}, and after taxes, {user.mention} has received {int(amnt * 0.92)} {currency}.\n{author.mention}, you now have {senderBal} {currency}, and {user.mention}, you now have {receiverBal} {currency}")
+			embed = discord.Embed(title="C&C Bot: Send", color=0xdfe324, description=f"{author.mention} has sent {format(amnt, ',d')} {currency}, and after taxes, {user.mention} has received {format(int(amnt * 0.92), ',d')} {currency}.\n{author.mention}, you now have {format(senderBal, ',d')} {currency}, and {user.mention}, you now have {format(receiverBal, ',d')} {currency}")
 			embed.set_thumbnail(url=user.avatar_url)
 		else:
 			embed.description = f"You do not have enough {currency} to send that much."

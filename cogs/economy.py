@@ -5,7 +5,6 @@
 import discord
 from discord.ext import commands
 import asyncio
-from discord.ext.commands import has_permissions
 
 import math
 import datetime
@@ -51,7 +50,7 @@ class Economy(commands.Cog):
 
 			currency = self.getCurrency()
 			bal = self.getBal(ctx.author.id)
-			embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"You currently have {bal} {currency}")
+			embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"You currently have {format(bal, ',d')} {currency}")
 			embed.set_thumbnail(url=ctx.author.avatar_url)
 			await ctx.send(embed=embed)
 		else:
@@ -60,7 +59,7 @@ class Economy(commands.Cog):
 
 			currency = self.getCurrency()
 			bal = self.getBal(member.id)
-			embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"{member.mention} currently has {bal} {currency}")
+			embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"{member.mention} currently has {format(bal, ',d')} {currency}")
 			embed.set_thumbnail(url=member.avatar_url)
 			await ctx.send(embed=embed)
 
@@ -151,7 +150,7 @@ class Economy(commands.Cog):
 				user = await self.bot.fetch_user(int(line[0]))
 			else:
 				print("SUCCESSFULLY GET_USER")
-			lb.append(f"{user.name} | {line[1]} {currency}\n") # add username and balance to leaderboard
+			lb.append(f"{user.name} | {format(line[1], ',d')} {currency}\n") # add username and balance to leaderboard
 
 		lb = 5*lb
 		limitedMsgs = [] # array for each page

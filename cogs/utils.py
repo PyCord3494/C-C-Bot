@@ -1,10 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import has_permissions
-import asyncio
-import random
 
-import time
 import json
 
 
@@ -28,18 +24,18 @@ class Utils(commands.Cog):
 		embed.add_field(name="Make Money!", value= f"{prefix}work\n{prefix}crime\n{prefix}gamble\n{prefix}slots")
 		embed.add_field(name="Free Money!", value= f"{prefix}daily")
 		embed.add_field(name="Utilities", value= f"{prefix}ping\n{prefix}botinfo")
-		embed.set_footer(text="\nType +help <command> for more info")
+		embed.set_footer(text="\nType +help <command>")
 		await ctx.send(embed=embed)
 
 
 	@help.command()
 	async def ping(self, ctx):
-		embed = discord.Embed(title="C&C Bot Help: Daily", color=0xdfe324, description="View the server's response time.")
+		embed = discord.Embed(title="C&C Bot Help: Ping", color=0xdfe324, description="View the server's response time.")
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def botinfo(self, ctx):
-		embed = discord.Embed(title="C&C Bot Help: Daily", color=0xdfe324, description="Learn more about me and my developer!")
+		embed = discord.Embed(title="C&C Bot Help: Learn More", color=0xdfe324, description="Learn more about me and my developer!")
 		await ctx.send(embed=embed)
 
 	@help.command(aliases=["bal", "money"])
@@ -54,12 +50,12 @@ class Utils(commands.Cog):
 
 	@help.command()
 	async def send(self, ctx):
-		embed = discord.Embed(title="C&C Bot Help: Send", color=0xdfe324, description="Send money to someone else in the server.\nUsage: `+send <user> <amount>`\nType +send for more details.")
+		embed = discord.Embed(title="C&C Bot Help: Send", color=0xdfe324, description="Send money to someone else in the server.\nUsage: `+send <user> <amount>`")
 		await ctx.send(embed=embed)
 
 	@help.command(aliases=["lb"])
 	async def leaderboard(self, ctx):
-		embed = discord.Embed(title="C&C Bot Help: Daily", color=0xdfe324, description="Show the users with the most money in the server! You can also type `+lb`")
+		embed = discord.Embed(title="C&C Bot Help: Leaderboard", color=0xdfe324, description="Show the users with the most money in the server! You can also type `+lb`")
 		await ctx.send(embed=embed)
 
 	@help.command()
@@ -74,12 +70,12 @@ class Utils(commands.Cog):
 
 	@help.command()
 	async def gamble(self, ctx):
-		embed = discord.Embed(title="C&C Bot Help: Gamble", color=0xdfe324, description="Risk some of your money to win some money.\nUsage: `+gamble amnt`")
+		embed = discord.Embed(title="C&C Bot Help: Gamble", color=0xdfe324, description="Risk some of your money to win some money.\nUsage: `+gamble <amount>`")
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def slots(self, ctx):
-		embed = discord.Embed(title="C&C Bot Help: Gamble", color=0xdfe324, description="Risk some of your money and play the slot machine.\nUsage: `+slots amnt`")
+		embed = discord.Embed(title="C&C Bot Help: Slots", color=0xdfe324, description="Risk some of your money and play the slot machine.\nUsage: `+slots <amount>`")
 		await ctx.send(embed=embed)
 
 	@help.command()

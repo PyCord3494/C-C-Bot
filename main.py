@@ -17,7 +17,7 @@ async def get_prefix(bot, message):
 
 
 bot = commands.Bot(command_prefix = get_prefix)
-extensions = ["cogs.economy", "cogs.earn", "cogs.transfer", "cogs.shop", "cogs.rewards", "cogs.admin", "cogs.error_help", "cogs.slots", "cogs.utils"]
+extensions = ["cogs.economy", "cogs.earn", "cogs.transfer", "cogs.shop", "cogs.rewards", "cogs.admin", "cogs.error_help", "cogs.slots", "cogs.utils", "cogs.other"]
 
 bot.remove_command('help')
 
@@ -29,6 +29,8 @@ async def on_ready():
 	print(f"{bot.user.name} - {bot.user.id}")
 	print(discord.__version__)
 	print("Ready...")
+
+	await bot.change_presence(activity=discord.Game(name="Do +help for help!"))
 
 
 @bot.command(hidden = True)

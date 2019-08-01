@@ -4,27 +4,12 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import has_permissions
-import asyncio
 import json
-
-import time
-import datetime
 
 
 class Admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-
-	@commands.command(pass_context=True)
-	@commands.cooldown(1, 2, commands.BucketType.user)	
-	async def ping(self, ctx):
-		embed = discord.Embed(color=0xdfe324, description="Pong!")
-		before = time.monotonic()
-		message = await ctx.send(embed=embed)
-		ping = (time.monotonic() - before) * 1000
-		embed.description = f"Pong!  `{round(ping,9)} ms`"
-		await message.edit(embed=embed)
 
 	@commands.command(hidden = True, pass_context=True)
 	async def end(self, ctx):
@@ -45,15 +30,12 @@ class Admin(commands.Cog):
 
 				with open('users.json','w') as f:
 					json.dump(data, f, indent=4)
-
-				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Added {amnt} {currency} to user {user.mention} ({user.id})")
+				bal = self.bot.get_cog("Economy").getBal(user.id)
+				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Added {format(amnt, ',d')} {currency} to user {user.mention} ({user.id})\nUser's new balance: {format(bal, ',d')} {currency}")
 				await ctx.send(embed=embed)
 			else:
-				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xff0000, description="User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins user amount`")
+				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xff0000, description="User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins <user> <amount>`")
 				await ctx.send(embed=embed)
-		else:
-			me = await self.bot.fetch_user(547475078082985990)
-			await me.send(f"User {ctx.author.mention}")
 
 
 	@commands.group(invoke_without_command=True, pass_context=True, hidden=True)

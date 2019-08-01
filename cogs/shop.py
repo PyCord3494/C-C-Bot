@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import asyncio
 
 import datetime
 
@@ -44,24 +43,24 @@ class Shop(commands.Cog):
 		bal = self.bot.get_cog("Economy").getBal(discordId) # grabs balance
 		price = self.items[ID - 1] # grabs price from array in __init__
 		if bal < price: # if cost is too much
-			embed = discord.Embed(title="C&C Bot: Shop", color=0xff0000, description=f"That will cost you {price} {currency}, but you only have {bal} {currency}")
+			embed = discord.Embed(title="C&C Bot: Shop", color=0xff0000, description=f"That will cost you {format(price, ',d')} {currency}, but you only have {format(bal, ',d')} {currency}")
 			embed.set_thumbnail(url=ctx.author.avatar_url)
 			await ctx.send(embed=embed)
 			return
 
 		bal = await self.bot.get_cog("Economy").editBal(discordId, -price) # subtract price from bal
 		
-		embed = discord.Embed(title="C&C Bot: Shop", color=0xdfe324, description=f"Purchase successful! Remaining balance: {bal} {currency}\nI have sent a message to {ctx.guild.owner.mention} and he will be messaging you when he can. Please be patient. :)")
+		embed = discord.Embed(title="C&C Bot: Shop", color=0xdfe324, description=f"Purchase successful! Remaining balance: {format(bal, ',d')} {currency}\nI have sent a message to {ctx.guild.owner.mention} and he will be messaging you when he can. Please be patient. :)")
 		embed.set_thumbnail(url=ctx.author.avatar_url)
 		msg = await ctx.send(embed=embed)
 
 
 		embed = discord.Embed(title="C&C Bot: NEW PURCHASE", color=0xdfe324)
 		if ID == 1: # shop item #1
-			embed.add_field(name="Item Bought", value=f"User {ctx.author.mention} ({ctx.author.id}) has purchased \"Not separated Custom Role!\" for {price} {currency}")
+			embed.add_field(name="Item Bought", value=f"User {ctx.author.mention} ({ctx.author.id}) has purchased \"Not separated Custom Role!\" for {format(price, ',d')} {currency}")
 		
 		elif ID == 2: # shop item #2
-			embed.add_field(name="Item Bought", value=f"User {ctx.author.mention} ({ctx.author.id}) has purchased \"Seperated Custom Role!\" for {price} {currency}")
+			embed.add_field(name="Item Bought", value=f"User {ctx.author.mention} ({ctx.author.id}) has purchased \"Seperated Custom Role!\" for {format(price, ',d')} {currency}")
 		embed.add_field(name="Link", value=f"[Click Me]({ctx.message.jump_url})!")
 		embed.set_thumbnail(url=ctx.author.avatar_url)
 		embed.timestamp = datetime.datetime.utcnow()

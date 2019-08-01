@@ -33,7 +33,7 @@ class Slots(commands.Cog):
 			if amnt == "allin" or amnt == "all":
 				amnt = self.bot.get_cog("Economy").getBal(userId)
 			else:
-				embed.description = f"You've provided improper input for the `slots` command. I do not know what `{amnt}` is.\nProper usage: +slots *amnt*"
+				embed.description = f"You've provided improper input for the `slots` command. I do not know what `{amnt}` is.\nProper usage: +slots <amount>"
 				embed.set_thumbnail(url=ctx.author.avatar_url)
 				await ctx.send(embed=embed)
 				return
@@ -57,35 +57,37 @@ class Slots(commands.Cog):
 			return
 
 		if not embed.description: # if no error occurred
-			#embed = discord.Embed(title="C&C Bot: COUNT RESULTS", color=0x00ff00)
-			#while len(emojis) > 2:
-				#msg = ""
-				# threeinarowwins = 0
-				# twosame = 0
-				# loses = 0
-				# for x in range(0, len(emojis)):
-				# 	for y in range(0, len(emojis)):
-				# 		for z in range(0, len(emojis)):
-				# 			a = emojis[x]
-				# 			b = emojis[y]
-				# 			c = emojis[z]
-				# 			#msg += f"{emojis[x]} {emojis[y]} {emojis[z]}\n"
-				# 			if (a == b == c):
-				# 				threeinarowwins += 1
-				# 			elif (b == a) or (b == c) or (a == c):
-				# 				twosame += 1
-				# 			else:
-				# 				loses += 1
+			#emojis = ["🍎","🍋","🍇","🍓","🍒", "🥝", "🥭"]
+			# emojis = ["🍎","🍋","🍇","🍓"]
+			# embed = discord.Embed(title="C&C Bot: COUNT RESULTS", color=0x00ff00)
+			# while len(emojis) > 2:
+			# 	msg = ""
+			# 	threeinarowwins = 0
+			# 	twosame = 0
+			# 	loses = 0
+			# 	for x in range(0, len(emojis)):
+			# 		for y in range(0, len(emojis)):
+			# 			for z in range(0, len(emojis)):
+			# 				a = emojis[x]
+			# 				b = emojis[y]
+			# 				c = emojis[z]
+			# 				#msg += f"{emojis[x]} {emojis[y]} {emojis[z]}\n"
+			# 				if (a == b == c):
+			# 					threeinarowwins += 1
+			# 				elif (b == a) or (b == c) or (a == c):
+			# 					twosame += 1
+			# 				else:
+			# 					loses += 1
 
-				# emojislist = ""
-				# for x in emojis:
-				# 	emojislist += f"{x}"
-				# embed.description = f"Emojis: {emojislist}\n# of 3-in-a-row Possible Wins: {threeinarowwins}" + f"\n# of 2 SAME emojis Possible Wins: {twosame}" + f"\n# of Possible Loses: {loses}" + f"\nWin Chance: {round(((threeinarowwins + twosame) / (threeinarowwins + twosame + loses) * 100))}%" +  f"\nLose Chance: {round((loses / (threeinarowwins + twosame + loses) * 100))}%"
-				# await ctx.send(embed=embed)
-				# await asyncio.sleep(2)
-				# emojis.pop()
+			# 	emojislist = ""
+			# 	for x in emojis:
+			# 		emojislist += f"{x}"
+			# 	embed.description = f"Emojis: {emojislist}\n# of 3-in-a-row Possible Wins: {threeinarowwins}" + f"\n# of 2 SAME emojis Possible Wins: {twosame}" + f"\n# of Possible Loses: {loses}" + f"\nWin Chance: {round(((threeinarowwins + twosame) / (threeinarowwins + twosame + loses) * 100))}%" +  f"\nLose Chance: {round((loses / (threeinarowwins + twosame + loses) * 100))}%"
+			# 	await ctx.send(embed=embed)
+			# 	await asyncio.sleep(2)
+			# 	emojis.pop()
 
-			emojis = ["🍎","🍋","🍇","🍓","🍒", "🥝", "🥭"]
+			emojis = ["🍎","🍋","🍇","🍓"]
 			
 			# generates results
 			a = random.choice(emojis) 
@@ -125,11 +127,11 @@ class Slots(commands.Cog):
 				embed.color = discord.Color(0xff0000)
 
 			await self.bot.get_cog("Economy").editBal(userId, moneyToAdd)
-			balance = self.bot.get_cog("Economy").getBal(userId)
+			bal = self.bot.get_cog("Economy").getBal(userId)
 			currency = self.bot.get_cog("Economy").getCurrency()
 			embed.add_field(name=f"**--- {result} ---**", value="_ _", inline=False)	
 			embed.add_field(name="Outcome:", value=f"**{moneyToAdd:+d}** {currency}", inline=True)
-			embed.add_field(name="Balance", value=f"**{balance}** {currency}", inline=True)
+			embed.add_field(name="Balance", value=f"**{format(bal, ',d')}** {currency}", inline=True)
 
 			await botMsg.edit(embed=embed)
 

@@ -3,7 +3,6 @@
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import has_permissions
 
 import json
 import datetime
@@ -52,9 +51,18 @@ class ErrorHelp(commands.Cog):
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 			err = str(error.param)
-			arg = err.replace("_", " ")
-			arg = arg.split(":")
-			embed.description = f"Please specify a {arg[0]} for this command to work."
+			err = err.replace("_", " ")
+			err = str(err.split(":")[0])
+			if err == "amnt":
+				err = "amount"
+
+			firstChar = err[0]
+			if firstChar.lower() in "aeiou" and err != "user":
+				a_an = "an"
+			else:
+				a_an = "a"
+
+			embed.description = f"Please specify {a_an} {err} for this command to work."
 
 		elif isinstance(error, commands.TooManyArguments):
 			ctx.command.reset_cooldown(ctx)
