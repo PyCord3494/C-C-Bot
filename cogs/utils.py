@@ -18,6 +18,7 @@ async def get_prefix(bot, message):
 class Utils(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		
 
 	@commands.group(invoke_without_command=True, pass_context=True)
 	async def help(self, ctx):
@@ -26,7 +27,7 @@ class Utils(commands.Cog):
 		embed.add_field(name="Money", value=f"{prefix}balance\n{prefix}shop\n{prefix}send\n{prefix}leaderboard")
 		embed.add_field(name="Make Money!", value= f"{prefix}work\n{prefix}crime\n{prefix}gamble\n{prefix}slots")
 		embed.add_field(name="Free Money!", value= f"{prefix}daily")
-		embed.add_field(name="_ _\nUtilities", value= f"{prefix}ping\n{prefix}botinfo")
+		embed.add_field(name="Utilities", value= f"{prefix}ping\n{prefix}botinfo")
 		embed.set_footer(text="\nType +help <command> for more info")
 		await ctx.send(embed=embed)
 
@@ -41,7 +42,7 @@ class Utils(commands.Cog):
 		embed = discord.Embed(title="C&C Bot Help: Daily", color=0xdfe324, description="Learn more about me and my developer!")
 		await ctx.send(embed=embed)
 
-	@help.command()
+	@help.command(aliases=["bal", "money"])
 	async def balance(self, ctx):
 		embed = discord.Embed(title="C&C Bot Help: Balance", color=0xdfe324, description="Displays your balance in the server. You can also type `+bal`")
 		await ctx.send(embed=embed)
@@ -56,7 +57,7 @@ class Utils(commands.Cog):
 		embed = discord.Embed(title="C&C Bot Help: Send", color=0xdfe324, description="Send money to someone else in the server.\nUsage: `+send <user> <amount>`\nType +send for more details.")
 		await ctx.send(embed=embed)
 
-	@help.command()
+	@help.command(aliases=["lb"])
 	async def leaderboard(self, ctx):
 		embed = discord.Embed(title="C&C Bot Help: Daily", color=0xdfe324, description="Show the users with the most money in the server! You can also type `+lb`")
 		await ctx.send(embed=embed)

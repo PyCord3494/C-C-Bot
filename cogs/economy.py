@@ -21,6 +21,15 @@ def log(discordID, credits): # Logs the time, the user's id, and the amount in w
 	logs.flush()
 	logs.close()
 
+
+async def get_prefix(bot, message):
+	with open(r"config.json", 'r') as f:
+			config = json.load(f)
+
+	prefix = config["prefix"]
+	return prefix
+
+
 class Economy(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -33,17 +42,27 @@ class Economy(commands.Cog):
 		return currency
 
 
-	@commands.command(aliases=["bal", "money"],pass_context=True)
+	@commands.command(aliases=["bal", "money"], pass_context=True)
 	@commands.cooldown(1, 5, commands.BucketType.user)
-	async def balance(self, ctx):
-		if await self.bot.get_cog("Economy").accCheck(ctx, ctx.author.id) == False:
-			return
+	async def balance(self, ctx, *, member: discord.Member=None):
+		if not member:
+			if await self.bot.get_cog("Economy").accCheck(ctx, ctx.author.id) == False:
+				return
 
-		currency = self.getCurrency()
-		bal = self.getBal(ctx.author.id)
-		embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"You currently have {bal} {currency}")
-		embed.set_thumbnail(url=ctx.author.avatar_url)
-		await ctx.send(embed=embed)
+			currency = self.getCurrency()
+			bal = self.getBal(ctx.author.id)
+			embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"You currently have {bal} {currency}")
+			embed.set_thumbnail(url=ctx.author.avatar_url)
+			await ctx.send(embed=embed)
+		else:
+			if await self.bot.get_cog("Economy").accCheck(ctx, member.id) == False:
+				return
+
+			currency = self.getCurrency()
+			bal = self.getBal(member.id)
+			embed = discord.Embed(title="C&C Bot: Balance", color=0xdfe324, description=f"{member.mention} currently has {bal} {currency}")
+			embed.set_thumbnail(url=member.avatar_url)
+			await ctx.send(embed=embed)
 
 
 	def getBal(self, discordId):
@@ -110,7 +129,8 @@ class Economy(commands.Cog):
 		else:
 			if str(ctx.command) != "start": # don't print if user is trying to $start
 				ctx.command.reset_cooldown(ctx)
-				embed = discord.Embed(title="C&C Bot: New User Alert!", color=0xff0000, description="You must $start your account before you can use my commands.")
+				prefix = await get_prefix(self.bot, ctx.message)
+				embed = discord.Embed(title="C&C Bot: New User Alert!", color=0xff0000, description=f"You must `{prefix}start` your account before you can use my commands.")
 				embed.set_thumbnail(url=ctx.author.avatar_url)
 				await ctx.send(embed=embed)
 			return False

@@ -11,7 +11,6 @@ from discord.ext.commands import has_permissions
 import asyncio
 import random
 
-
 class Earn(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot

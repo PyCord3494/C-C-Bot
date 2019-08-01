@@ -30,7 +30,7 @@ class ErrorHelp(commands.Cog):
 
 		if isinstance(error, commands.CommandNotFound):
 			prefix = self.get_prefix()
-			lst = ["ping", "botinfo", "help", "balance", "bal", "money", "shop", "send", "leaderboard", "lb", "work", "crime", "gamble", "slots", "daily"]
+			lst = ["ping", "botinfo", "bi", "help", "balance", "bal", "money", "shop", "send", "leaderboard", "lb", "work", "crime", "gamble", "slots", "daily"]
 		#	embed.description = "Command not found!"
 			cmd = ctx.message.content.split()[0][1:]
 			try:
