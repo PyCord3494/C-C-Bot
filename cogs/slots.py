@@ -16,9 +16,8 @@ class Slots(commands.Cog):
 		self.bot = bot
 
 
-
 	@commands.command(aliases=["slot"], pass_context=True)
-	@commands.cooldown(1, 1, commands.BucketType.user)
+	@commands.cooldown(1, 300, commands.BucketType.user)
 	async def slots(self, ctx, amnt):
 		userId = ctx.author.id
 		embed = discord.Embed(title="C&C Bot: Slots", color=0xff0000)
