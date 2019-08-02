@@ -21,9 +21,9 @@ class Admin(commands.Cog):
 
 
 	async def msgPycord(self, ctx):
-		loggingChnl = self.bot.get_channel(606289510300385281)
+		loggingChnl = self.bot.get_channel(605921228083167245)
 		if not loggingChnl:
-			loggingChnl = self.bot.fetch_channel(606289510300385281)
+			loggingChnl = self.bot.fetch_channel(605921228083167245)
 		await loggingChnl.send(f"User {ctx.author.mention} ({ctx.author.id}) attempted command `{ctx.command}` in channel {ctx.channel.mention} ({ctx.channel.id})")
 
 

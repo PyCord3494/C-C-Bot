@@ -148,11 +148,9 @@ class Economy(commands.Cog):
 			user = self.bot.get_user(id=int(line[0])) # grab user object from ID 
 			if not user:
 				user = await self.bot.fetch_user(int(line[0]))
-			else:
-				print("SUCCESSFULLY GET_USER")
+
 			lb.append(f"{user.name} | {format(line[1], ',d')} {currency}\n") # add username and balance to leaderboard
 
-		lb = 5*lb
 		limitedMsgs = [] # array for each page
 		pageCount = math.ceil(len(lb) / 10) # pageCount = number of users / 10 users per page
 		for x in range(0, pageCount): # for every page
@@ -169,15 +167,17 @@ class Economy(commands.Cog):
 			return (user == ctx.message.author) and (str(reaction.emoji) == '⬅' or str(reaction.emoji) == '➡')
 
 		while(True):
-			if currPage == 0: # if first page
-				await msg.add_reaction("➡")
+			if pageCount > 1:
+				if currPage == 0: # if first page
+					await msg.add_reaction("➡")
+					print(pageCount)
 
-			elif (currPage + 1) == pageCount: # if last page
-				await msg.add_reaction("⬅")
+				elif (currPage + 1) == pageCount: # if last page
+					await msg.add_reaction("⬅")
 
-			else: # if not first nor last
-				await msg.add_reaction("➡")
-				await msg.add_reaction("⬅")
+				else: # if not first nor last
+					await msg.add_reaction("➡")
+					await msg.add_reaction("⬅")
 			
 			try:
 				reaction, user = await self.bot.wait_for('reaction_add', timeout=60, check=check) # wait for user reaction

@@ -19,7 +19,7 @@ class Utils(commands.Cog):
 	@commands.group(invoke_without_command=True, pass_context=True)
 	async def help(self, ctx):
 		prefix = await get_prefix(self.bot, ctx.message)
-		embed = discord.Embed(title="C&C self.bot Help", color=0xdfe324, description=f"**My prefix is {prefix}**")
+		embed = discord.Embed(title="C&C Bot Help", color=0xdfe324, description=f"**My prefix is {prefix}**")
 		embed.add_field(name="Money", value=f"{prefix}balance\n{prefix}shop\n{prefix}send\n{prefix}leaderboard")
 		embed.add_field(name="Make Money!", value= f"{prefix}work\n{prefix}crime\n{prefix}gamble\n{prefix}slots")
 		embed.add_field(name="Free Money!", value= f"{prefix}daily")
