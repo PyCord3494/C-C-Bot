@@ -41,8 +41,8 @@ class Transfer(commands.Cog):
 			return
 
 		if await self.bot.get_cog("Economy").checkBal(author.id, amnt) == True: # if sender has enough money
-			senderBal = await self.bot.get_cog("Economy").editBal(author.id, -amnt) # subtract amnt from sender
-			receiverBal = await self.bot.get_cog("Economy").editBal(user.id, int(amnt * 0.92)) # subtract taxes from amnt and add amnt to bal of receiver
+			senderBal = await self.bot.get_cog("Economy").editBal(ctx, author.id, -amnt) # subtract amnt from sender
+			receiverBal = await self.bot.get_cog("Economy").editBal(ctx, user.id, int(amnt * 0.92)) # subtract taxes from amnt and add amnt to bal of receiver
 			embed = discord.Embed(title="C&C Bot: Send", color=0xdfe324, description=f"{author.mention} has sent {format(amnt, ',d')} {currency}, and after taxes, {user.mention} has received {format(int(amnt * 0.92), ',d')} {currency}.\n{author.mention}, you now have {format(senderBal, ',d')} {currency}, and {user.mention}, you now have {format(receiverBal, ',d')} {currency}")
 			embed.set_thumbnail(url=user.avatar_url)
 		else:

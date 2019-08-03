@@ -23,7 +23,7 @@ class Earn(commands.Cog):
 
 		currency = self.bot.get_cog("Economy").getCurrency()
 		amnt = random.randint(200, 300)	
-		bal = await self.bot.get_cog("Economy").editBal(userId, amnt)
+		bal = await self.bot.get_cog("Economy").editBal(ctx, userId, amnt)
 		embed = discord.Embed(title="C&C Bot: Work", color=0xdfe324, description=f"After a long day of work, you earned {amnt} {currency}. You now have {format(bal, ',d')} {currency}.")
 		embed.set_thumbnail(url=ctx.author.avatar_url)
 		await ctx.send(embed=embed)
@@ -46,12 +46,12 @@ class Earn(commands.Cog):
 		oldBal = self.bot.get_cog("Economy").getBal(userId)
 
 		if outcome == 0:
-			bal = await self.bot.get_cog("Economy").editBal(userId, amnt)
+			bal = await self.bot.get_cog("Economy").editBal(ctx, userId, amnt)
 			embed.color = discord.Color(0xdfe324)
 			embed.description = description=f"Successfully robbed {amnt} {currency} from a bank! You went from {format(oldBal, ',d')} {currency} to {format(bal, ',d')} {currency}."
 
 		elif outcome == 1:
-			bal = await self.bot.get_cog("Economy").editBal(userId, -amnt)
+			bal = await self.bot.get_cog("Economy").editBal(ctx, userId, -amnt)
 			embed.description = f"Oh no! You got caught and you were fined {amnt} {currency}. You went from {format(oldBal, ',d')} {currency} to {format(bal, ',d')} {currency}."
 
 		await ctx.send(embed=embed)
@@ -106,10 +106,10 @@ class Earn(commands.Cog):
 		oldBal = self.bot.get_cog("Economy").getBal(userId)
 		outcome = random.randint(1, 10) # num between 1 and 10
 		if outcome > 4: # 40% win rate
-			bal = await self.bot.get_cog("Economy").editBal(userId, amnt)
+			bal = await self.bot.get_cog("Economy").editBal(ctx, userId, amnt)
 			embed = discord.Embed(title="C&C Bot: Gamble", color=0xdfe324, description=f"Congrats! You won doubled your bet! You went from {format(oldBal, ',d')} {currency} to {format(bal, ',d')} {currency}.")
 		else: # 60% lose rate
-			bal = await self.bot.get_cog("Economy").editBal(userId, -amnt)
+			bal = await self.bot.get_cog("Economy").editBal(ctx, userId, -amnt)
 			embed = discord.Embed(title="C&C Bot: Gamble", color=0xff0000, description=f"Unfortunately, you have lost your {currency} you have bet. You went from {format(oldBal, ',d')} {currency} to {format(bal, ',d')} {currency}.")
 		embed.set_thumbnail(url=ctx.author.avatar_url)
 		await ctx.send(embed=embed)

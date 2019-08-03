@@ -11,12 +11,12 @@ import datetime
 import json
 import operator
 
-def log(discordID, credits): # Logs the time, the user's id, and the amount in which a balance gets edited
+def log(ctx, discordID, credits): # Logs the time, the user's id, and the amount in which a balance gets edited
 	x = datetime.datetime.now()
 						#  MON DAY HOUR:MIN:SEC
 	localtime = x.strftime("%b %d %H:%M:%S")
 	logs = open("logs.txt", "a")
-	logs.write(f"{localtime} : {discordID} : {credits}\n")
+	logs.write(f"{localtime} : {discordID} : {credits} : {ctx.command}\n")
 	logs.flush()
 	logs.close()
 
@@ -71,7 +71,7 @@ class Economy(commands.Cog):
 		return bal
 
 
-	async def editBal(self, discordId, amnt: int):
+	async def editBal(self, ctx, discordId, amnt: int):
 		with open('users.json') as f:
 				data = json.load(f)
 
@@ -80,7 +80,7 @@ class Economy(commands.Cog):
 		with open('users.json','w') as f:
 			json.dump(data, f, indent=4)
 			bal = data[str(discordId)]
-		log(discordId, amnt)
+		log(ctx, discordId, amnt)
 		return bal
 
 

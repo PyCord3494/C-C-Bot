@@ -48,7 +48,7 @@ class Shop(commands.Cog):
 			await ctx.send(embed=embed)
 			return
 
-		bal = await self.bot.get_cog("Economy").editBal(discordId, -price) # subtract price from bal
+		bal = await self.bot.get_cog("Economy").editBal(ctx, discordId, -price) # subtract price from bal
 		
 		embed = discord.Embed(title="C&C Bot: Shop", color=0xdfe324, description=f"Purchase successful! Remaining balance: {format(bal, ',d')} {currency}\nI have sent a message to {ctx.guild.owner.mention} and he will be messaging you when he can. Please be patient. :)")
 		embed.set_thumbnail(url=ctx.author.avatar_url)

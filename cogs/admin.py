@@ -31,21 +31,11 @@ class Admin(commands.Cog):
 	async def addcoins(self, ctx, user: discord.Member, amnt: int):
 		if ctx.author.id == 435806214484393996 or ctx.author.id == 547475078082985990:
 			currency = self.bot.get_cog("Economy").getCurrency()
-
-			with open('users.json') as f:
-					data = json.load(f)
-
-			if str(user.id) in data:
-				data[str(user.id)] = data[str(user.id)] + amnt
-
-				with open('users.json','w') as f:
-					json.dump(data, f, indent=4)
-				bal = self.bot.get_cog("Economy").getBal(user.id)
-				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Added {format(amnt, ',d')} {currency} to user {user.mention} ({user.id})\nUser's new balance: {format(bal, ',d')} {currency}")
-				await ctx.send(embed=embed)
-			else:
-				embed = discord.Embed(title="C&C Bot: ADMIN", color=0xff0000, description="User not found. Please @mention him or provide me his ID.\nProper format: `+addcoins <user> <amount>`")
-				await ctx.send(embed=embed)
+			if await self.bot.get_cog("Economy").accCheck(ctx, user.id) == False:
+				return
+			bal = await self.bot.get_cog("Economy").editBal(ctx, user.id, amnt)
+			embed = discord.Embed(title="C&C Bot: ADMIN", color=0xdfe324, description=f"Added {format(amnt, ',d')} {currency} to user {user.mention} ({user.id})\nUser's new balance: {format(bal, ',d')} {currency}")
+			await ctx.send(embed=embed)
 		else:
 			await self.msgPycord(ctx)
 

@@ -125,7 +125,7 @@ class Slots(commands.Cog):
 				result = "YOU LOST"
 				embed.color = discord.Color(0xff0000)
 
-			await self.bot.get_cog("Economy").editBal(userId, moneyToAdd)
+			await self.bot.get_cog("Economy").editBal(ctx, userId, moneyToAdd)
 			bal = self.bot.get_cog("Economy").getBal(userId)
 			currency = self.bot.get_cog("Economy").getCurrency()
 			embed.add_field(name=f"**--- {result} ---**", value="_ _", inline=False)	
