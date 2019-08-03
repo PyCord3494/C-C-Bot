@@ -59,7 +59,7 @@ class Earn(commands.Cog):
 
 
 	@commands.command(pass_context=True)
-	@commands.cooldown(1, 300, commands.BucketType.user)
+	@commands.cooldown(1, 120, commands.BucketType.user)
 	async def gamble(self, ctx, amnt):
 		currency = self.bot.get_cog("Economy").getCurrency()
 		author = ctx.author

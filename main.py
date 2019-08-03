@@ -16,7 +16,7 @@ async def get_prefix(bot, message):
 	return prefix
 
 
-bot = commands.Bot(command_prefix = get_prefix)
+bot = commands.Bot(command_prefix = get_prefix, case_insensitive=True)
 extensions = ["cogs.economy", "cogs.earn", "cogs.transfer", "cogs.shop", "cogs.rewards", "cogs.admin", "cogs.error_help", "cogs.slots", "cogs.utils", "cogs.other"]
 
 bot.remove_command('help')

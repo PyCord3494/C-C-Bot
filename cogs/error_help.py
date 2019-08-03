@@ -35,9 +35,9 @@ class ErrorHelp(commands.Cog):
 			try:
 				closest = get_close_matches(cmd.lower(), lst)[0]
 			except IndexError:
-				embed.description = f"`{prefix}{cmd}` is not a known command."
+				embed.description = f"`{prefix}{cmd.lower()}` is not a known command."
 			else:
-				embed.description = f"`{prefix}{cmd}` is not a command, did you mean `{prefix}{closest}`?"
+				embed.description = f"`{prefix}{cmd.lower()}` is not a command, did you mean `{prefix}{closest}`?"
 
 
 		elif isinstance(error, commands.CommandOnCooldown):

@@ -135,9 +135,9 @@ class Economy(commands.Cog):
 			return False
 
 
-	@commands.command(pass_context=True)
+	@commands.command(aliases=["lb"], pass_context=True)
 	@commands.cooldown(1, 60, commands.BucketType.user)
-	async def lb(self, ctx):
+	async def leaderboard(self, ctx):
 		currency = self.getCurrency()
 		with open('users.json') as f:
 			data = json.load(f)
